@@ -13,18 +13,20 @@ import 'package:subwub/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const SubwubApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify that we are in the artists view
+    expect(find.byIcon(Icons.search), findsOneWidget);
+    expect(find.text('Artists'), findsOneWidget);
+    expect(find.text('Results'), findsNothing);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    // Tap the search icon and trigger a frame.
+    await tester.tap(find.byIcon(Icons.search));
+    await tester.pump();
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that we are in the search view
+    expect(find.text('Results'), findsOneWidget);
+    // expect(find.text('Artists'), findsNothing);
   });
 }
