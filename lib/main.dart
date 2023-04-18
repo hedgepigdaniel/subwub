@@ -170,16 +170,16 @@ class _AddUserAccountState extends State<AddUserAccount> {
                             password: password);
                         var pingResult = await client.ping();
                         setState(() {
-                          if (pingResult is SubsonicApiSuccess) {
-                            result =
-                                "Success! API version: ${pingResult.version}";
-                          } else if (pingResult is SubsonicApiError) {
-                            result =
-                                "Failure: ${pingResult.message} (code ${pingResult.code})";
-                          } else if (pingResult is SubsonicError) {
-                            result = "Error: ${pingResult.error}";
-                          } else {
-                            throw Error();
+                          switch (pingResult) {
+                            case SubsonicApiSuccess(version: var version):
+                              result = "Success! API version: $version";
+                            case SubsonicApiError(
+                                message: var message,
+                                code: var code
+                              ):
+                              result = "Failure: $message (code $code)";
+                            case SubsonicError(error: var error):
+                              result = "Error: $error";
                           }
                         });
                       },

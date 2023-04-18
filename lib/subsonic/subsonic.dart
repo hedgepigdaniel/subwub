@@ -3,7 +3,7 @@ import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'dart:math';
 
-abstract class SubsonicResult<Content> {}
+sealed class SubsonicResult<Content> {}
 
 class SubsonicError<Content> extends SubsonicResult<Content> {
   final Exception error;
@@ -39,9 +39,8 @@ class SubsonicClient {
         _username = username,
         _serverUrl = serverUrl;
 
-  Future<SubsonicResult<void>> ping() {
-    return _callSubsonic(path: "/rest/ping", parseContent: (response) => {});
-  }
+  Future<SubsonicResult<void>> ping() =>
+      _callSubsonic(path: "/rest/ping", parseContent: (response) => {});
 
   Future<SubsonicResult<Content>> _callSubsonic<Content>({
     required path,
