@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
-import 'dart:math';
+
+import 'package:subwub/subsonic/subsonic.dart';
 
 void main() {
   runApp(const SubwubApp());
@@ -72,12 +71,6 @@ class UserAccounts extends StatelessWidget {
               Navigator.pushNamed(context, '/user-accounts/add');
             }),
       );
-}
-
-String generateRandomString(int len) {
-  var r = Random.secure();
-  return String.fromCharCodes(
-      List.generate(len, (index) => r.nextInt(26) + 65));
 }
 
 class AddUserAccount extends StatefulWidget {
@@ -171,34 +164,24 @@ class _AddUserAccountState extends State<AddUserAccount> {
                         String username = _usernameEditingController.text;
                         String password = _passwordEditingController.text;
 
-                        String salt = generateRandomString(12);
-                        String token = md5
-                            .convert(utf8.encode(password + salt))
-                            .toString();
-                        try {
-                          http.Response response = await http
-                              .get(server!.resolve("/rest/ping").replace(
-                            queryParameters: {
-                              "u": username,
-                              "t": token,
-                              "s": salt,
-                              "v": "1.15.0",
-                              "c": "subwub",
-                              "f": "json",
-                            },
-                          ));
-                          var parsedResponse = jsonDecode(response.body);
-                          print(response.body);
-                          setState(() {
+                        SubsonicClient client = SubsonicClient(
+                            serverUrl: server,
+                            username: username,
+                            password: password);
+                        var pingResult = await client.ping();
+                        setState(() {
+                          if (pingResult is SubsonicApiSuccess) {
                             result =
-                                parsedResponse['subsonic-response']['status'];
-                          });
-                        } on Exception catch (error) {
-                          print(error);
-                          setState(() {
-                            result = "";
-                          });
-                        }
+                                "Success! API version: ${pingResult.version}";
+                          } else if (pingResult is SubsonicApiError) {
+                            result =
+                                "Failure: ${pingResult.message} (code ${pingResult.code})";
+                          } else if (pingResult is SubsonicError) {
+                            result = "Error: ${pingResult.error}";
+                          } else {
+                            throw Error();
+                          }
+                        });
                       },
                       child: Text("Save"))
                 ],
