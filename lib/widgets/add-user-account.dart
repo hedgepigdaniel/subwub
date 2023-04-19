@@ -27,7 +27,7 @@ class _AddUserAccountState extends State<AddUserAccount> {
   @override
   Widget build(context) => Scaffold(
         appBar: AppBar(
-          title: Text("Add user account"),
+          title: const Text("Add user account"),
         ),
         body: Form(
           key: _formKey,

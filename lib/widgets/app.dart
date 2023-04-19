@@ -16,7 +16,7 @@ class App extends StatelessWidget {
 
   final store = Store(
     reducer,
-    initialState: AppState(),
+    initialState: AppState.initial(),
     middleware: [LoggingMiddleware.printer()],
   );
 
