@@ -27,7 +27,7 @@ class Artists extends StatelessWidget {
     return StoreConnector<AppState, ArtistsViewModel>(
       builder: (context, model) => Artists_(
         userAccount: model.userAccount,
-        artists: model.artists,
+        artists: model.artists ?? IList(const []),
         dispatch: model.dispatch,
       ),
       converter: (store) => ArtistsViewModel(
@@ -48,7 +48,7 @@ class Artists_ extends StatefulWidget {
   });
 
   final UserAccount? userAccount;
-  final IList<SubsonicArtist>? artists;
+  final IList<SubsonicArtist> artists;
   final dynamic Function(dynamic) dispatch;
 
   @override
@@ -83,18 +83,21 @@ class _ArtistsState extends State<Artists_> {
         ));
 
       default:
-        break;
+        print(result);
+        throw Exception("Failed to fetch artists :(");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: (widget.artists ?? IList(const []))
-          .map(
-            (artist) => ListTile(title: Text(artist.name)),
-          )
-          .toList(),
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        if (widget.artists.length <= index) {
+          return null;
+        }
+        var artist = widget.artists.get(index);
+        return ListTile(title: Text(artist.name));
+      },
     );
   }
 }

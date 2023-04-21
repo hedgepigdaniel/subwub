@@ -106,6 +106,7 @@ class SubsonicClient {
     try {
       response = await _doRequest(path: path, queryParams: const {});
     } on Exception catch (error) {
+      print(error);
       return SubsonicError(error);
     }
     try {
@@ -126,6 +127,7 @@ class SubsonicClient {
         );
       }
     } on Error catch (error) {
+      print(error);
       return SubsonicError(Exception("Failed to parse API response"));
     }
   }
