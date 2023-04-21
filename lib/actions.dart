@@ -1,4 +1,5 @@
 import 'package:redux/redux.dart';
+import '../subsonic/subsonic.dart';
 
 sealed class AppAction {}
 
@@ -18,4 +19,14 @@ class UpsertUserAccount extends AppAction {
   final Uri serverUrl;
   final String username;
   final String password;
+}
+
+class SubsonicArtistsIndexResponse extends AppAction {
+  SubsonicArtistsIndexResponse({
+    required this.index,
+    required this.userAccount,
+  });
+
+  final SubsonicArtistIndex index;
+  final String userAccount;
 }

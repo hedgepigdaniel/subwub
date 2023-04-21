@@ -1,3 +1,4 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:subwub/actions.dart';
 
 import './state.dart';
@@ -17,6 +18,17 @@ AppState reducer(AppState state, dynamic actionDynamic) {
           user,
         ),
         currentUserAccount: user.key,
+      );
+
+    case SubsonicArtistsIndexResponse():
+      return state.copyWith(
+        artistsByUser: state.artistsByUser.add(
+          action.userAccount,
+          action.index.index.fold(
+            IList(const []),
+            (value, element) => value.addAll(element.artist),
+          ),
+        ),
       );
   }
 }

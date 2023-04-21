@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../routes.dart';
 import './drawer.dart';
+import 'artists.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -30,7 +31,7 @@ class Home extends StatelessWidget {
         drawer: const SubwubDrawer(),
         body: const TabBarView(
           children: [
-            Center(child: Text("Artists")),
+            Artists(),
             Center(child: Text("Albums")),
             Center(child: Text("Songs")),
           ],

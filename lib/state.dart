@@ -1,6 +1,8 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../subsonic/subsonic.dart';
+
 part 'state.freezed.dart';
 part 'state.g.dart';
 
@@ -9,14 +11,18 @@ class AppState with _$AppState {
   const factory AppState({
     required IMap<String, UserAccount> userAccounts,
     required String? currentUserAccount,
+    required IMap<String, IList<SubsonicArtist>> artistsByUser,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, Object?> json) =>
       _$AppStateFromJson(json);
 }
 
-const AppState initialState =
-    AppState(userAccounts: IMapConst({}), currentUserAccount: null);
+const AppState initialState = AppState(
+  userAccounts: IMapConst({}),
+  currentUserAccount: null,
+  artistsByUser: IMapConst({}),
+);
 
 @freezed
 class UserAccount with _$UserAccount {
