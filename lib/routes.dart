@@ -1,9 +1,10 @@
 enum Routes {
   home("/"),
-  welcome("/welcome"),
   search("/search"),
   userAccounts("/users"),
-  addUserAccount("/users/add");
+  addUserAccount("/users/add"),
+
+  welcome("welcome");
 
   const Routes(this.path);
 
