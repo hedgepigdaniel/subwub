@@ -8,12 +8,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:subwub/main.dart';
+import 'package:subwub/widgets/app.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const SubwubApp());
+    await tester.pumpWidget(App());
 
     // Verify that we are in the artists view
     expect(find.byIcon(Icons.search), findsOneWidget);
