@@ -1,5 +1,6 @@
 enum Routes {
   home("/"),
+  welcome("/welcome"),
   search("/search"),
   userAccounts("/users"),
   addUserAccount("/users/add");

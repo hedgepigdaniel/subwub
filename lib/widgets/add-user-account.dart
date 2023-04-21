@@ -3,17 +3,11 @@ import 'package:flutter_redux/flutter_redux.dart';
 
 import '../actions.dart';
 import '../state.dart';
-import '../subsonic/subsonic.dart';
 
-class AddUserAccount extends StatefulWidget {
-  const AddUserAccount({super.key});
+class AddUserAccount extends StatelessWidget {
+  AddUserAccount({super.key, required void Function() this.onComplete});
 
-  @override
-  State<AddUserAccount> createState() => _AddUserAccountState();
-}
-
-class _AddUserAccountState extends State<AddUserAccount> {
-  String result = "";
+  final void Function() onComplete;
 
   final TextEditingController _serverEditingController =
       TextEditingController();
@@ -84,7 +78,6 @@ class _AddUserAccountState extends State<AddUserAccount> {
                     controller: _passwordEditingController,
                     autofillHints: const [AutofillHints.password],
                   ),
-                  Text(result),
                   StoreConnector<AppState, Dispatch>(
                     converter: convertDispatch,
                     builder: (context, dispatch) => ElevatedButton(
@@ -104,27 +97,10 @@ class _AddUserAccountState extends State<AddUserAccount> {
                             password: password,
                           ));
 
-                          SubsonicClient client = SubsonicClient(
-                              serverUrl: server,
-                              username: username,
-                              password: password);
-                          var pingResult = await client.ping();
-                          setState(() {
-                            switch (pingResult) {
-                              case SubsonicApiSuccess(version: var version):
-                                result = "Success! API version: $version";
-                              case SubsonicApiError(
-                                  message: var message,
-                                  code: var code
-                                ):
-                                result = "Failure: $message (code $code)";
-                              case SubsonicError(error: var error):
-                                result = "Error: $error";
-                            }
-                          });
+                          onComplete();
                         },
                         child: const Text("Save")),
-                  )
+                  ),
                 ],
               ),
             ),
