@@ -1,3 +1,4 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:redux_logging/redux_logging.dart';
 import 'package:subwub/reducer.dart';
@@ -16,7 +17,7 @@ class App extends StatelessWidget {
 
   final store = Store(
     reducer,
-    initialState: AppState.initial(),
+    initialState: AppState(userAccounts: IMap()),
     middleware: [LoggingMiddleware.printer()],
   );
 

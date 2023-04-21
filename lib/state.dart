@@ -1,43 +1,35 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_collection/built_collection.dart';
-import 'package:built_value/serializer.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'state.g.dart';
+part 'state.freezed.dart';
 
-abstract class AppState implements Built<AppState, AppStateBuilder> {
-  static Serializer<AppState> get serializer => _$appStateSerializer;
+@freezed
+class AppState with _$AppState {
+  const factory AppState({
+    required IMap<UserAccountKey, UserAccountValue> userAccounts,
+  }) = _AppState;
 
-  BuiltMap<UserAccountKey, UserAccountValue> get userAccounts;
-
-  static AppState initial() => AppState((builder) {
-        builder.userAccounts.addAll({});
-      });
-
-  factory AppState([void Function(AppStateBuilder) updates]) = _$AppState;
-  AppState._();
+  factory AppState.fromJson(Map<String, Object?> json) =>
+      _$AppStateFromJson(json);
 }
 
-abstract class UserAccountKey
-    implements Built<UserAccountKey, UserAccountKeyBuilder> {
-  static Serializer<UserAccountKey> get serializer =>
-      _$userAccountKeySerializer;
+@freezed
+class UserAccountKey with _$UserAccountKey {
+  const factory UserAccountKey({
+    required String serverUrl,
+    required String username,
+  }) = _UserAccountKey;
 
-  String get serverUrl;
-  String get username;
-
-  factory UserAccountKey([void Function(UserAccountKeyBuilder) updates]) =
-      _$UserAccountKey;
-  UserAccountKey._();
+  factory UserAccountKey.fromJson(Map<String, Object?> json) =>
+      _$UserAccountKeyFromJson(json);
 }
 
-abstract class UserAccountValue
-    implements Built<UserAccountValue, UserAccountValueBuilder> {
-  static Serializer<UserAccountValue> get serializer =>
-      _$userAccountValueSerializer;
+@freezed
+class UserAccountValue with _$UserAccountValue {
+  const factory UserAccountValue({
+    required String password,
+  }) = _UserAccountValue;
 
-  String get password;
-
-  factory UserAccountValue([void Function(UserAccountValueBuilder) updates]) =
-      _$UserAccountValue;
-  UserAccountValue._();
+  factory UserAccountValue.fromJson(Map<String, Object?> json) =>
+      _$UserAccountValueFromJson(json);
 }
