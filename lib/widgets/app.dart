@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:redux_logging/redux_logging.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:subwub/widgets/welcome.dart';
 
-import '../reducer.dart';
 import '../routes.dart';
 import '../state.dart';
 
@@ -14,13 +12,9 @@ import 'user-accounts.dart';
 import 'add-user-account.dart';
 
 class App extends StatelessWidget {
-  App({super.key});
+  App({super.key, required Store<AppState> this.store});
 
-  final store = Store<AppState>(
-    reducer,
-    initialState: initialState,
-    middleware: [LoggingMiddleware.printer()],
-  );
+  final Store<AppState> store;
 
   // This widget is the root of your application.
   @override

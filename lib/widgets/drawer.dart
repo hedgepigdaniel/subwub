@@ -12,8 +12,15 @@ class SubwubDrawer extends StatelessWidget {
         child: Column(children: [
       DrawerHeader(
         decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-        child: StoreConnector<AppState, UserAccountKey?>(
-          converter: (store) => store.state.currentUserAccount,
+        child: StoreConnector<AppState, UserAccount?>(
+          converter: (store) {
+            String? currentUserAccount = store.state.currentUserAccount;
+            if (currentUserAccount != null) {
+              return store.state.userAccounts[currentUserAccount];
+            } else {
+              return null;
+            }
+          },
           builder: (context, currentUserAccount) {
             if (currentUserAccount == null) {
               throw Error();
