@@ -11,7 +11,8 @@ class UserAccounts extends StatelessWidget {
   Widget build(context) => Scaffold(
         appBar: AppBar(),
         body: StoreConnector<AppState, Iterable<UserAccount>>(
-          converter: (store) => store.state.userAccounts.values,
+          converter: (store) => store.state.stateByUserId.values
+              .map((userState) => userState.userAccount),
           builder: (context, userAccounts) => Column(
             children: [
               ...userAccounts.map((user) => ListTile(

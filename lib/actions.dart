@@ -9,8 +9,8 @@ Dispatch convertDispatch(Store<dynamic> store) => (AppAction action) {
       store.dispatch(action);
     };
 
-class UpsertUserAccount extends AppAction {
-  UpsertUserAccount({
+class UpsertUserAccountAction extends AppAction {
+  UpsertUserAccountAction({
     required this.serverUrl,
     required this.username,
     required this.password,
@@ -21,12 +21,22 @@ class UpsertUserAccount extends AppAction {
   final String password;
 }
 
-class SubsonicArtistsIndexResponse extends AppAction {
-  SubsonicArtistsIndexResponse({
+class SubsonicGetArtistsResponseAction extends AppAction {
+  SubsonicGetArtistsResponseAction({
     required this.index,
     required this.userAccount,
   });
 
   final SubsonicArtistIndex index;
+  final String userAccount;
+}
+
+class SubsonicGetArtistResponseAction extends AppAction {
+  SubsonicGetArtistResponseAction({
+    required this.artist,
+    required this.userAccount,
+  });
+
+  final SubsonicGetArtistResponse artist;
   final String userAccount;
 }

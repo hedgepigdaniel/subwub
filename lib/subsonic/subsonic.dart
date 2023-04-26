@@ -4,6 +4,7 @@ import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:pretty_json/pretty_json.dart';
 
 part 'subsonic.freezed.dart';
 part 'subsonic.g.dart';
@@ -46,6 +47,23 @@ class SubsonicArtist with _$SubsonicArtist {
 }
 
 @freezed
+class SubsonicAlbum with _$SubsonicAlbum {
+  const factory SubsonicAlbum({
+    required String id,
+    required String name,
+    required String coverArt,
+    required int songCount,
+    required DateTime created,
+    required int duration,
+    required String artist,
+    required String artistId,
+  }) = _SubsonicAlbum;
+
+  factory SubsonicAlbum.fromJson(Map<String, Object?> json) =>
+      _$SubsonicAlbumFromJson(json);
+}
+
+@freezed
 class SubsonicArtistIndexEntry with _$SubsonicArtistIndexEntry {
   const factory SubsonicArtistIndexEntry({
     required String name,
@@ -54,6 +72,17 @@ class SubsonicArtistIndexEntry with _$SubsonicArtistIndexEntry {
 
   factory SubsonicArtistIndexEntry.fromJson(Map<String, Object?> json) =>
       _$SubsonicArtistIndexEntryFromJson(json);
+}
+
+@freezed
+class SubsonicArtistAlbums with _$SubsonicArtistAlbums {
+  const factory SubsonicArtistAlbums({
+    required String id,
+    required IList<SubsonicAlbum> album,
+  }) = _SubsonicArtistAlbums;
+
+  factory SubsonicArtistAlbums.fromJson(Map<String, Object?> json) =>
+      _$SubsonicArtistAlbumsFromJson(json);
 }
 
 @freezed
@@ -68,13 +97,23 @@ class SubsonicArtistIndex with _$SubsonicArtistIndex {
 }
 
 @freezed
-class SubsonicArtists with _$SubsonicArtists {
-  const factory SubsonicArtists({
+class SubsonicGetArtistsResponse with _$SubsonicGetArtistsResponse {
+  const factory SubsonicGetArtistsResponse({
     required SubsonicArtistIndex artists,
-  }) = _SubsonicArtists;
+  }) = _SubsonicGetArtistsResponse;
 
-  factory SubsonicArtists.fromJson(Map<String, Object?> json) =>
-      _$SubsonicArtistsFromJson(json);
+  factory SubsonicGetArtistsResponse.fromJson(Map<String, Object?> json) =>
+      _$SubsonicGetArtistsResponseFromJson(json);
+}
+
+@freezed
+class SubsonicGetArtistResponse with _$SubsonicGetArtistResponse {
+  const factory SubsonicGetArtistResponse({
+    required SubsonicArtistAlbums artist,
+  }) = _SubsonicGetArtistResponse;
+
+  factory SubsonicGetArtistResponse.fromJson(Map<String, Object?> json) =>
+      _$SubsonicGetArtistResponseFromJson(json);
 }
 
 class SubsonicClient {
@@ -93,18 +132,31 @@ class SubsonicClient {
   Future<SubsonicResult<void>> ping() =>
       _callSubsonic(path: "/rest/ping", parseContent: (response) => {});
 
-  Future<SubsonicResult<SubsonicArtists>> getArtists() => _callSubsonic(
+  Future<SubsonicResult<SubsonicGetArtistsResponse>> getArtists() =>
+      _callSubsonic(
         path: "/rest/getArtists",
-        parseContent: (response) => SubsonicArtists.fromJson(response),
+        parseContent: (response) =>
+            SubsonicGetArtistsResponse.fromJson(response),
+      );
+
+  Future<SubsonicResult<SubsonicGetArtistResponse>> getArtist(
+          {required String artistId}) =>
+      _callSubsonic(
+        path: "/rest/getArtist",
+        queryParams: {"id": artistId},
+        parseContent: (response) =>
+            SubsonicGetArtistResponse.fromJson(response),
       );
 
   Future<SubsonicResult<Content>> _callSubsonic<Content>({
     required path,
     required Content Function(dynamic) parseContent,
+    Map<String, String>? queryParams,
   }) async {
     Response response;
     try {
-      response = await _doRequest(path: path, queryParams: const {});
+      response =
+          await _doRequest(path: path, queryParams: queryParams ?? const {});
     } on Exception catch (error) {
       print(error);
       return SubsonicError(error);

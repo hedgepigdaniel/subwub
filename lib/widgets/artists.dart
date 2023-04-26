@@ -4,19 +4,21 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:subwub/actions.dart';
 import 'package:subwub/selectors/current-user-account-artists.dart';
 import 'package:subwub/selectors/current-user-account.dart';
+import 'package:subwub/selectors/select-artist-by-id.dart';
 import 'package:subwub/state.dart';
 import 'package:subwub/subsonic/subsonic.dart';
+import 'package:subwub/widgets/artist.dart';
 
 class ArtistsViewModel {
   ArtistsViewModel({
     required this.userAccount,
     required this.dispatch,
-    required this.artists,
+    required this.artistIds,
   });
 
   final UserAccount? userAccount;
   final dynamic Function(dynamic) dispatch;
-  final IList<SubsonicArtist>? artists;
+  final IList<String>? artistIds;
 }
 
 class Artists extends StatelessWidget {
@@ -27,12 +29,12 @@ class Artists extends StatelessWidget {
     return StoreConnector<AppState, ArtistsViewModel>(
       builder: (context, model) => Artists_(
         userAccount: model.userAccount,
-        artists: model.artists ?? IList(const []),
+        artistIds: model.artistIds ?? IList(const []),
         dispatch: model.dispatch,
       ),
       converter: (store) => ArtistsViewModel(
         userAccount: selectCurrentUserAccount(store.state),
-        artists: selectCurrentUserAccountArtists(store.state),
+        artistIds: selectCurrentUserSortedArtistIds(store.state),
         dispatch: store.dispatch,
       ),
     );
@@ -43,12 +45,12 @@ class Artists_ extends StatefulWidget {
   const Artists_({
     super.key,
     required this.userAccount,
-    required this.artists,
+    required this.artistIds,
     required this.dispatch,
   });
 
   final UserAccount? userAccount;
-  final IList<SubsonicArtist> artists;
+  final IList<String> artistIds;
   final dynamic Function(dynamic) dispatch;
 
   @override
@@ -77,7 +79,7 @@ class _ArtistsState extends State<Artists_> {
     var result = await client.getArtists();
     switch (result) {
       case SubsonicApiSuccess():
-        widget.dispatch(SubsonicArtistsIndexResponse(
+        widget.dispatch(SubsonicGetArtistsResponseAction(
           userAccount: userAccount.key,
           index: result.content.artists,
         ));
@@ -92,12 +94,29 @@ class _ArtistsState extends State<Artists_> {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemBuilder: (context, index) {
-        if (widget.artists.length <= index) {
+        if (widget.artistIds.length <= index) {
           return null;
         }
-        var artist = widget.artists.get(index);
-        return ListTile(title: Text(artist.name));
+        return ArtistTile(artistId: widget.artistIds.get(index));
       },
+    );
+  }
+}
+
+class ArtistTile extends StatelessWidget {
+  const ArtistTile({super.key, required this.artistId});
+
+  final String artistId;
+
+  @override
+  Widget build(BuildContext context) {
+    return StoreConnector<AppState, SubsonicArtist>(
+      builder: (context, artist) => ListTile(
+        title: Text(artist.name),
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => Artist(artistId: artist.id))),
+      ),
+      converter: (store) => makeSelectArtistById(artistId)(store.state)!,
     );
   }
 }

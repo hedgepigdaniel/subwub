@@ -1,15 +1,12 @@
 import 'package:reselect/reselect.dart';
-import 'package:subwub/selectors/artists-by-user.dart';
-import 'package:subwub/selectors/current-user-account-key.dart';
+import 'package:subwub/selectors/select-current-user-state.dart';
 
-var selectCurrentUserAccountArtists = createSelector2(
-  selectCurrentUserAccountKey,
-  selectArtistsByUser,
-  (currentUserKey, artistsByUser) {
-    if (currentUserKey != null) {
-      return artistsByUser.get(currentUserKey);
-    } else {
+var selectCurrentUserSortedArtistIds = createSelector1(
+  selectCurrentUserState,
+  (currentUserState) {
+    if (currentUserState == null) {
       return null;
     }
+    return currentUserState.sortedArtistIds;
   },
 );

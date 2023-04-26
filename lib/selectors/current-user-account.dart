@@ -1,10 +1,12 @@
-import 'package:subwub/state.dart';
+import 'package:reselect/reselect.dart';
+import 'package:subwub/selectors/select-current-user-state.dart';
 
-UserAccount? selectCurrentUserAccount(AppState state) {
-  String? currentUserAccount = state.currentUserAccount;
-  if (currentUserAccount != null) {
-    return state.userAccounts[currentUserAccount];
-  } else {
-    return null;
-  }
-}
+var selectCurrentUserAccount = createSelector1(
+  selectCurrentUserState,
+  (currentUserState) {
+    if (currentUserState == null) {
+      return null;
+    }
+    return currentUserState.userAccount;
+  },
+);

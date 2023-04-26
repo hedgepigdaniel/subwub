@@ -91,7 +91,7 @@ class AddUserAccount extends StatelessWidget {
                           String username = _usernameEditingController.text;
                           String password = _passwordEditingController.text;
 
-                          dispatch(UpsertUserAccount(
+                          dispatch(UpsertUserAccountAction(
                             serverUrl: server,
                             username: username,
                             password: password,

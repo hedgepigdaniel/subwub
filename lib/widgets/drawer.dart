@@ -16,7 +16,13 @@ class SubwubDrawer extends StatelessWidget {
           converter: (store) {
             String? currentUserAccount = store.state.currentUserAccount;
             if (currentUserAccount != null) {
-              return store.state.userAccounts[currentUserAccount];
+              UserState? userState =
+                  store.state.stateByUserId[currentUserAccount];
+              if (userState != null) {
+                return userState.userAccount;
+              } else {
+                return null;
+              }
             } else {
               return null;
             }

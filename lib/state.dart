@@ -9,20 +9,13 @@ part 'state.g.dart';
 @freezed
 class AppState with _$AppState {
   const factory AppState({
-    required IMap<String, UserAccount> userAccounts,
-    required String? currentUserAccount,
-    required IMap<String, IList<SubsonicArtist>> artistsByUser,
+    String? currentUserAccount,
+    @Default(IMapConst({})) IMap<String, UserState> stateByUserId,
   }) = _AppState;
 
   factory AppState.fromJson(Map<String, Object?> json) =>
       _$AppStateFromJson(json);
 }
-
-const AppState initialState = AppState(
-  userAccounts: IMapConst({}),
-  currentUserAccount: null,
-  artistsByUser: IMapConst({}),
-);
 
 @freezed
 class UserAccount with _$UserAccount {
@@ -38,4 +31,22 @@ class UserAccount with _$UserAccount {
 
   factory UserAccount.fromJson(Map<String, Object?> json) =>
       _$UserAccountFromJson(json);
+}
+
+@freezed
+class UserState with _$UserState {
+  const factory UserState({
+    required UserAccount userAccount,
+    @Default(IListConst<String>([]))
+        IList<String> sortedArtistIds,
+    @Default(IMapConst<String, SubsonicArtist>({}))
+        IMap<String, SubsonicArtist> artistsById,
+    @Default(IMapConst<String, SubsonicAlbum>({}))
+        IMap<String, SubsonicAlbum> albumsById,
+    @Default(IMapConst<String, IList<String>>({}))
+        IMap<String, IList<String>> albumIdsByArtistId,
+  }) = _UserState;
+
+  factory UserState.fromJson(Map<String, Object?> json) =>
+      _$UserStateFromJson(json);
 }

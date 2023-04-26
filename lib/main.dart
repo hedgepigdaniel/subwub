@@ -20,7 +20,7 @@ void main() async {
     ),
   );
 
-  final loadedInitialState = (await persistor.load()) ?? initialState;
+  final loadedInitialState = (await persistor.load()) ?? const AppState();
 
   final store = Store<AppState>(
     reducer,
