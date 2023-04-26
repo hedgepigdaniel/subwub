@@ -162,7 +162,7 @@ class SubsonicClient {
       return SubsonicError(error);
     }
     try {
-      var result = json.decode(response.body);
+      var result = json.decode(utf8.decode(response.bodyBytes));
       // print(prettyJson(result));
       var subsonicResponse = result['subsonic-response'];
       if (subsonicResponse['status'] == "ok") {
